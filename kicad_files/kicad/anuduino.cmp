@@ -1,0 +1,66 @@
+Cmp-Mod V01 Created by CvPcb (2012-apr-16-27)-stable date = Tue 27 Aug 2013 02:00:34 PM IST
+
+BeginCmp
+TimeStamp = /521C6363;
+Reference = D1;
+ValeurCmp = ZENER;
+IdModule  = R3;
+EndCmp
+
+BeginCmp
+TimeStamp = /521B65D2;
+Reference = D2;
+ValeurCmp = ZENER;
+IdModule  = R1;
+EndCmp
+
+BeginCmp
+TimeStamp = /520346E9;
+Reference = IC1;
+ValeurCmp = ATTINY85-20PU;
+IdModule  = DIP-8__300;
+EndCmp
+
+BeginCmp
+TimeStamp = /5208B340;
+Reference = J1;
+ValeurCmp = USBPCB;
+IdModule  = SparkFun-USB-A-PCB;
+EndCmp
+
+BeginCmp
+TimeStamp = /520DDDA3;
+Reference = P1;
+ValeurCmp = CONN_4;
+IdModule  = PIN_ARRAY_4x1;
+EndCmp
+
+BeginCmp
+TimeStamp = /520DDDC4;
+Reference = P2;
+ValeurCmp = CONN_4;
+IdModule  = PIN_ARRAY_4x1;
+EndCmp
+
+BeginCmp
+TimeStamp = /52034E90;
+Reference = R1;
+ValeurCmp = 1k5;
+IdModule  = R1;
+EndCmp
+
+BeginCmp
+TimeStamp = /52034E88;
+Reference = R2;
+ValeurCmp = 68R;
+IdModule  = R1;
+EndCmp
+
+BeginCmp
+TimeStamp = /52034E86;
+Reference = R3;
+ValeurCmp = 68R;
+IdModule  = R1;
+EndCmp
+
+EndListe

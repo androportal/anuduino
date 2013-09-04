@@ -1,0 +1,129 @@
+# EESchema Netlist Version 1.1 created  Fri 30 Aug 2013 09:53:59 AM IST
+(
+ ( /52201E18 $noname  D1 3.6V_ZENER {Lib=ZENER}
+  (    1 GND )
+  (    2 /D- )
+ )
+ ( /521B65D2 $noname  D2 3.6_V_ZENER {Lib=ZENER}
+  (    1 GND )
+  (    2 /D+ )
+ )
+ ( /520DDDC4 $noname  P2 CONN_4 {Lib=CONN_4}
+  (    1 N-000004 )
+  (    2 N-000002 )
+  (    3 N-000010 )
+  (    4 GND )
+ )
+ ( /520DDDA3 $noname  P1 CONN_4 {Lib=CONN_4}
+  (    1 N-000006 )
+  (    2 N-000005 )
+  (    3 N-000001 )
+  (    4 +5V )
+ )
+ ( /5208B340 SparkFun-USB-A-PCB  J1 USBPCB {Lib=USBPCB}
+  (   5V +5V )
+  (  GND GND )
+  ( USBM /D- )
+  ( USBP /D+ )
+ )
+ ( /52034E90 $noname  R1 1k5 {Lib=R}
+  (    1 +5V )
+  (    2 /D- )
+ )
+ ( /52034E88 $noname  R2 68R {Lib=R}
+  (    1 /D- )
+  (    2 N-000002 )
+ )
+ ( /52034E86 $noname  R3 68R {Lib=R}
+  (    1 /D+ )
+  (    2 N-000010 )
+ )
+ ( /520346E9 DIP8  IC1 ATTINY85-20PU {Lib=ATTINY85-P}
+  (    1 N-000004 )
+  (    2 N-000002 )
+  (    3 N-000010 )
+  (    4 GND )
+  (    5 N-000006 )
+  (    6 N-000005 )
+  (    7 N-000001 )
+  (    8 +5V )
+ )
+)
+*
+{ Allowed footprints by component:
+$component D1
+ D?
+ SO*
+ SM*
+$endlist
+$component D2
+ D?
+ SO*
+ SM*
+$endlist
+$component R1
+ R?
+ SM0603
+ SM0805
+ R?-*
+ SM1206
+$endlist
+$component R2
+ R?
+ SM0603
+ SM0805
+ R?-*
+ SM1206
+$endlist
+$component R3
+ R?
+ SM0603
+ SM0805
+ R?-*
+ SM1206
+$endlist
+$endfootprintlist
+}
+{ Pin List by Nets
+Net 1 "" ""
+ P1 3
+ IC1 7
+Net 2 "" ""
+ P2 2
+ IC1 2
+ R2 2
+Net 3 "+5V" "+5V"
+ R1 1
+ IC1 8
+ J1 5V
+ P1 4
+Net 4 "" ""
+ P2 1
+ IC1 1
+Net 5 "" ""
+ IC1 6
+ P1 2
+Net 6 "" ""
+ IC1 5
+ P1 1
+Net 7 "/D-" "D-"
+ D1 2
+ R2 1
+ J1 USBM
+ R1 2
+Net 8 "GND" "GND"
+ IC1 4
+ P2 4
+ D1 1
+ D2 1
+ J1 GND
+Net 9 "/D+" "D+"
+ D2 2
+ R3 1
+ J1 USBP
+Net 10 "" ""
+ IC1 3
+ P2 3
+ R3 2
+}
+#End

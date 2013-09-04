@@ -1,0 +1,302 @@
+EESchema Schematic File Version 2  date Fri 30 Aug 2013 09:54:26 AM IST
+LIBS:power
+LIBS:device
+LIBS:transistors
+LIBS:conn
+LIBS:linear
+LIBS:regul
+LIBS:74xx
+LIBS:cmos4000
+LIBS:adc-dac
+LIBS:memory
+LIBS:xilinx
+LIBS:special
+LIBS:microcontrollers
+LIBS:dsp
+LIBS:microchip
+LIBS:analog_switches
+LIBS:motorola
+LIBS:texas
+LIBS:intel
+LIBS:audio
+LIBS:interface
+LIBS:digital-audio
+LIBS:philips
+LIBS:display
+LIBS:cypress
+LIBS:siliconi
+LIBS:opto
+LIBS:atmel
+LIBS:contrib
+LIBS:valves
+LIBS:SparkFun
+LIBS:digispark-cache
+EELAYER 25  0
+EELAYER END
+$Descr A4 11700 8267
+encoding utf-8
+Sheet 1 1
+Title ""
+Date "30 aug 2013"
+Rev ""
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+Connection ~ 1700 5400
+Connection ~ 1700 5000
+$Comp
+L ZENER D1
+U 1 1 52201E18
+P 1700 5200
+F 0 "D1" H 1700 5300 50  0000 C CNN
+F 1 "3.6V ZENER" H 1700 5100 40  0000 C CNN
+	1    1700 5200
+	0    -1   -1   0   
+$EndComp
+Connection ~ 1900 5400
+Wire Wire Line
+	1900 5400 1900 5600
+Connection ~ 1700 4700
+Wire Wire Line
+	1700 4700 1700 5000
+Wire Wire Line
+	3600 5300 6200 5300
+Wire Wire Line
+	3600 5300 3600 5000
+Wire Wire Line
+	3600 5000 2950 5000
+Connection ~ 3150 4700
+Wire Wire Line
+	3150 4700 3150 5200
+Wire Wire Line
+	3150 5200 2950 5200
+Connection ~ 2950 5300
+Connection ~ 3800 4350
+Connection ~ 4550 4100
+Connection ~ 1850 4200
+Connection ~ 4300 4100
+Connection ~ 6050 5300
+Wire Wire Line
+	6200 4900 6100 4900
+Wire Wire Line
+	6200 4900 6200 5300
+Connection ~ 3350 4800
+Wire Wire Line
+	3400 4400 2850 4400
+Wire Wire Line
+	3400 4600 3150 4600
+Wire Wire Line
+	3150 4600 3150 4200
+Wire Wire Line
+	3150 4200 2850 4200
+Wire Wire Line
+	3400 4800 2700 4800
+Wire Wire Line
+	2200 4700 1500 4700
+Connection ~ 2050 4800
+Connection ~ 1500 4500
+Wire Wire Line
+	1500 4500 1550 4500
+Connection ~ 6100 4400
+Connection ~ 1500 4800
+Connection ~ 1500 4700
+Connection ~ 1500 4600
+Connection ~ 6100 4400
+Connection ~ 1950 4200
+Connection ~ 2000 4200
+Connection ~ 2000 4700
+Connection ~ 6100 4900
+Connection ~ 6100 4900
+Connection ~ 6100 4900
+Connection ~ 6100 4900
+Wire Wire Line
+	6100 4900 6100 5000
+Wire Wire Line
+	2000 4200 1850 4200
+Wire Wire Line
+	1550 4500 1550 4400
+Wire Wire Line
+	1500 4800 2200 4800
+Wire Wire Line
+	1500 4600 1850 4600
+Wire Wire Line
+	1850 4600 1850 4200
+Connection ~ 1800 4700
+Wire Wire Line
+	3400 4700 2700 4700
+Wire Wire Line
+	2850 4100 6100 4100
+Wire Wire Line
+	6100 4100 6100 4400
+Wire Wire Line
+	2850 4300 3050 4300
+Wire Wire Line
+	3050 4300 3050 4500
+Wire Wire Line
+	3050 4500 3400 4500
+Connection ~ 3300 4700
+Wire Wire Line
+	2950 5300 3400 5300
+Wire Wire Line
+	3400 5300 3400 4900
+Wire Wire Line
+	2950 5100 3250 5100
+Wire Wire Line
+	3250 5100 3250 4800
+Connection ~ 3250 4800
+Wire Wire Line
+	1700 5400 2000 5400
+Wire Wire Line
+	2000 5000 2000 4800
+Wire Wire Line
+	2000 4800 2050 4800
+Connection ~ 2000 4800
+$Comp
+L ZENER D2
+U 1 1 521B65D2
+P 2000 5200
+F 0 "D2" H 2000 5300 50  0000 C CNN
+F 1 "3.6 V ZENER" H 2000 5100 40  0000 C CNN
+	1    2000 5200
+	0    -1   -1   0   
+$EndComp
+$Comp
+L +5V #PWR01
+U 1 1 520DDFE9
+P 4550 4100
+F 0 "#PWR01" H 4550 4190 20  0001 C CNN
+F 1 "+5V" H 4550 4190 30  0000 C CNN
+	1    4550 4100
+	1    0    0    -1  
+$EndComp
+$Comp
+L PWR_FLAG #FLG02
+U 1 1 520DDF6D
+P 1950 4200
+F 0 "#FLG02" H 1950 4295 30  0001 C CNN
+F 1 "PWR_FLAG" H 1950 4380 30  0000 C CNN
+	1    1950 4200
+	1    0    0    -1  
+$EndComp
+$Comp
+L PWR_FLAG #FLG03
+U 1 1 520DDF5C
+P 6050 5300
+F 0 "#FLG03" H 6050 5395 30  0001 C CNN
+F 1 "PWR_FLAG" H 6050 5480 30  0000 C CNN
+	1    6050 5300
+	-1   0    0    1   
+$EndComp
+$Comp
+L CONN_4 P2
+U 1 1 520DDDC4
+P 2600 5150
+F 0 "P2" V 2550 5150 50  0000 C CNN
+F 1 "CONN_4" V 2650 5150 50  0000 C CNN
+	1    2600 5150
+	-1   0    0    1   
+$EndComp
+$Comp
+L CONN_4 P1
+U 1 1 520DDDA3
+P 2500 4250
+F 0 "P1" V 2450 4250 50  0000 C CNN
+F 1 "CONN_4" V 2550 4250 50  0000 C CNN
+	1    2500 4250
+	-1   0    0    1   
+$EndComp
+Text Label 1600 4600 0    60   ~ 0
++5V
+Text Label 1900 4800 0    60   ~ 0
+D+
+Text Label 1650 4800 0    60   ~ 0
+D+
+Text Label 1900 4700 0    60   ~ 0
+D-
+$Comp
+L USBPCB J1
+U 1 1 5208B340
+P 1400 4500
+F 0 "J1" H 1500 4900 50  0000 C CNN
+F 1 "USBPCB" H 1500 4400 50  0000 C CNN
+F 2 "SparkFun-USB-A-PCB" H 1500 4300 50  0001 C CNN
+	1    1400 4500
+	-1   0    0    1   
+$EndComp
+$Comp
+L GND #PWR04
+U 1 1 52071D2C
+P 1900 5600
+F 0 "#PWR04" H 1900 5600 30  0001 C CNN
+F 1 "GND" H 1900 5530 30  0001 C CNN
+	1    1900 5600
+	1    0    0    -1  
+$EndComp
+$Comp
+L GND #PWR05
+U 1 1 520719A9
+P 6100 5000
+F 0 "#PWR05" H 6100 5000 30  0001 C CNN
+F 1 "GND" H 6100 4930 30  0001 C CNN
+	1    6100 5000
+	1    0    0    -1  
+$EndComp
+$Comp
+L +5V #PWR06
+U 1 1 520716DC
+P 1850 4200
+F 0 "#PWR06" H 1850 4290 20  0001 C CNN
+F 1 "+5V" H 1850 4290 30  0000 C CNN
+	1    1850 4200
+	1    0    0    -1  
+$EndComp
+$Comp
+L GND #PWR07
+U 1 1 520350F3
+P 1550 4400
+F 0 "#PWR07" H 1550 4400 30  0001 C CNN
+F 1 "GND" H 1550 4330 30  0001 C CNN
+	1    1550 4400
+	-1   0    0    1   
+$EndComp
+$Comp
+L R R1
+U 1 1 52034E90
+P 2000 4450
+F 0 "R1" V 2080 4450 50  0000 C CNN
+F 1 "1k5" V 2000 4450 50  0000 C CNN
+	1    2000 4450
+	1    0    0    -1  
+$EndComp
+$Comp
+L R R2
+U 1 1 52034E88
+P 2450 4700
+F 0 "R2" V 2530 4700 50  0000 C CNN
+F 1 "68R" V 2450 4700 50  0000 C CNN
+	1    2450 4700
+	0    -1   -1   0   
+$EndComp
+$Comp
+L R R3
+U 1 1 52034E86
+P 2450 4800
+F 0 "R3" V 2530 4800 50  0000 C CNN
+F 1 "68R" V 2450 4800 50  0000 C CNN
+	1    2450 4800
+	0    -1   -1   0   
+$EndComp
+$Comp
+L ATTINY85-P IC1
+U 1 1 520346E9
+P 3600 4300
+F 0 "IC1" H 3700 4350 60  0000 C CNN
+F 1 "ATTINY85-20PU" H 5600 3550 60  0000 C CNN
+F 2 "DIP8" H 3700 3550 60  0001 C CNN
+	1    3600 4300
+	1    0    0    -1  
+$EndComp
+$EndSCHEMATC

@@ -36,7 +36,7 @@ Desgin your own PCB
 
 #. Anuduino is single layer PCB board.All its connections are on **front** side.It has been possible because some of the components are placed at back and few in front. 
 
-#. You just need to print the anuduino-Front.ps. 
+#. You just need to print the anuduino-Front.ps present in kicad folder.
 
 #. Once you have the PCB. Open the getting_started.rst in doc folder.It contains detailed explanation of what all you need and how you have to proceed.
 

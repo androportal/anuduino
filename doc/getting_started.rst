@@ -17,8 +17,8 @@ Anuduino
 
 * What is arduino?
 
- Arduino is an open-source electronics prototyping platform. It's intended for artists, designers, hobbyists and anyone interested in creating interactive objects or environments but             tad too expensive ($15) for small projects or if you are new to electronics.We started exploring Digispark project which has developed a 9$ ATtiny-85 Arduino compatible board.  
- We have redesigned the circuit with optimized components and used  DIP packages and single sided PCB to reduce cost to less than 3$.
+ Arduino is an open-source electronics prototyping platform. It's intended for artists, designers, hobbyists and anyone interested in creating interactive objects or environments but             tad too expensive ($15) for small projects or if you are new to electronics.We started exploring Digispark project which has developed around  9$ ATtiny-85 Arduino compatible board.  
+ We have redesigned the circuit with optimized components and used DIP packages and single sided PCB to reduce cost to less than 3$.
 
 * Why anuduino ?
 
@@ -54,7 +54,7 @@ Anuduino
  |Analog  I/O             |4           |6         |          
  +------------------------+------------+----------+
    	
-.. note :: The above comparison was made in comparison with Arduino UNO which is pretty common.There are other variants of Arduino with more cost ,more memory and features as well. 
+.. note :: The above comparison is made with Arduino UNO which is a pretty common.There are other variants of Arduino with more cost,more memory and features as well. 
 
 * What is Anuduino ?
 
@@ -66,21 +66,18 @@ Anuduino
  + 6 I/O pins (2 are used for USB only if your program actively communicates over USB, otherwise you can use all 6 even if you are programming via USB)
  + 8 KB flash memory (about 6 KB after bootloader)
 
-
-
 * How micronucleus bootloader works ?
 
- Micronucleus is a bootloader designed for AVR tiny 85 chips with a minimal usb interface.Micronucelus is the the code that is installed on the device  using an avr programmer. This  code allows the anuduino to act like a USB device, receives code, and when it receives code erase the code previously loaded. It also runs the code loaded onto it after a 5 second  delay (if bootloaderis normal version) if it does not receive a request to upload new code within that 5 seconds.
+ Micronucleus is a bootloader designed for AVR tiny 85 chips with a minimal usb interface.Micronucelus is the the code that is installed on the device using an avr programmer. This  code allows the anuduino to act like a USB device, receives code, and when it receives code erase the code previously loaded. It also runs the code loaded onto it after a 5 second  delay (if bootloader uploaded is normal version , more about this later) if it does not receive a request to upload new code within that 5 seconds.
 
  It is a small V-USB program, similar to the DigiUSB, DigiKeyboard, and other usb related libraries. Normally programs exist at the very beginning of  the flash memory in the attiny85 chip, but micronucleus has been modified so the start of the program is about 6kb of 0xFF bytes (In other words all the bits in 6Kb are high).
  After that, micronucleus begins and uses up the final 2kb. This leaves room at the start of the chip for your own programs, but micronucleus always stays installed at the end. 0xFF  bytes are interpreted as NOP (no operation) instructions by the AVR chip, so the first time you run it, or if you run it after an erase but no write (sometimes this happens if there  is an error during the erase part of an upload attempt), next time the chip turns on it will execute all those NOPs and slam in to the bootloader code.
 
- When you use micronucleus to upload a program, there's a trick to it - USB requires the device always respond to requests, but the tiny85 chip can't do that - whenever it's erasing  or writing part of it's own program memory it has to go to sleep for about 4.5 milliseconds. Some of the more expensive chips like the mega328 have special bootloader support which lets them keep running in the background while an erase or write happens in another section of memory. `Embedded Creations <http://embedded-creations.com/projects/attiny85-usb-bootloader-overview/>`_  discovered however that if you craft your computer  program to just not send any requests during that frozen time, the computer never notices the device has frozen up and doesn't crash the USB connection. This is pretty fragile, which  is why the USB connection to the bootloader can sometimes crash if you run other intense usb software in the background, like an instance of digiterm polling for a device to appear.
+ When you use micronucleus to upload a program, there's a trick to it - USB requires the device always respond to requests, but the tiny85 chip can't do that - whenever it's erasing  or writing part of it's own program memory it has to go to sleep for about 4.5 milliseconds. Some of the more expensive chips like the mega328 have special bootloader support which lets them keep running in the background while an erase or write happens in another section of memory. `Embedded Creations <http://embedded-creations.com/projects/attiny85-usb-bootloader-overview/>`_  discovered however that if you craft your computer  program to just not send any requests during that frozen time, the computer never notices the device has frozen up and doesn't crash the USB connection. This is pretty fragile, which is why the USB connection to the bootloader can sometimes crash if you run other intense usb software in the background, like an instance of digiterm polling for a device to appear.
  
- So when the micronucleus command line tool first finds a anuduino, it asks it "How much memory do you have, and how long should I wait after each type of request?" - when you see that assertion fail on ubuntu, it's talking about that request - the program tried to ask that question and had an error response due to some annoying linux permissions things. Next, it asks the device to erase it's memory and waits the right amount of time for it to do so - about 50 milliseconds to do all 6kb of flash pages. Once that's done, it starts uploading 64 byte chunks of your new program. Micronucleus writes in these bytes at the starting 6kb of flash memory, but with one special exception:
+ So when the micronucleus command line tool first finds anuduino, it asks it "How much memory do you have, and how long should I wait after each type of request?" - when you see that assertion fail on ubuntu, it's talking about that request - the program tried to ask that question and had an error response due to linux permissions issues. Next,it asks the device to erase it's memory and waits the right amount of time for it to do so - about 50 milliseconds to do all 6kb of flash pages. Once that's done, it starts uploading 64 byte chunks of your new program. Micronucleus writes in these bytes at the starting 6kb of flash memory, but with one special exception:
 
  In the first page there's an interrupt vector table. The bootloader (on the device) replaces the reset vector and the pinchange vector with jump instructions pointing to it's own interrupt vector table 6kb later. Other than that, the program is left alone.
-
  When the computer is finished uploading, the bootloader finally writes down what the original values of the user's reset vector and pinchange vector were in the very last four bytes of that first 6kb chunk of blank memory.
 
  This little modification ensures the bootloader will run first when the chip is powered, and the pinchange interrupt is necessary for V-USB on the device to function in the bootloader. But wait - the user program needs to be able to use the V-USB to talk over USB as well! Embedded Creations came up with a really neat solution for that in their USBaspLoader-tiny85 project: Whenever the bootloader is running a special part of memory contains 0xB007 - whenever the pin change interrupt handler function is run inside of the bootloader, it checks if those two bytes are there, and if not, it immediately jumps to the user program's pinchange handler. This detect and jump behaviour is fast enough to not cause any problems with the V-USB software, but does mean other programs using PCINT (pin change interrupt) on the anuduino will find there's a slightly longer delay before their function runs than there is on a raw chip with no bootloader.
@@ -90,11 +87,11 @@ Anuduino
 
 * At what clock speed and voltage level does the circuit work?
 
- It uses the high speed PLL at 16MHz.The internal PLL of Attiny85 generates a clock frequency that is 8x multiplied from a source input. By default, the PLL uses the output of the  internal, 8.0 MHz RC oscillator as source and the safe voltage is 3.8V or more for this speed. 16.5mhz is a better clock speed closer to 16.0mhz which is more useful with existing  arduino libraries. Also if you Run the attiny85 at < 4v you might even brick it. That puts the chip out of specifications and the results are unpredictable ,sometimes the bootloader  will overwrite bits of itself and brick the device requiring a high voltage serial programmer (or regular ISP programmer if you didn't disable the reset pin) to recover.Hence it's  suggested to use 5V.
+ It uses the high speed PLL at 16MHz.The internal PLL of Attiny85 generates a clock frequency that is 8x multiplied from a source input. By default, the PLL uses the output of the  internal, 8.0 MHz RC oscillator as source and the safe voltage is 3.8V or more for this speed. 16.0mhz is more useful with existing  arduino libraries. Also if you Run the attiny85 at < 4v you might even brick it. That puts the chip out of specifications and the results are unpredictable ,sometimes the bootloader  will overwrite bits of itself and brick the device requiring a high voltage serial programmer (or regular ISP programmer if you didn't disable the reset pin) to recover.Hence it's suggested to use 5V supply.
  
 * What if my code is more than 6 K?
 
- If you are uploading your sketch using Digispark integrated Arduino IDE ,before uploading if you compile the code you will get an idea of how much memory does your code need.So before uploading its a good habit to first compile your code.In case it's more than 6kb it's likely to overwrite your bootloader.In which case you have to rewritw the bootloader using ISP programmer.But you can reupload the bootloader on your chip  only if your reset pin is disabled as I/O (reset HIGH)  otherwise you will need HVSP programmer (In case your reset is enabled as I/O) to reconfigure your chip to be programmed with ISP programmer. Tersely ,it's a matter of fuse settings (specifically the RESET bit of hfuse) of your chip.
+ If you are uploading your sketch using Digispark integrated Arduino IDE ,before uploading if you compile the code you will get an idea of how much memory does your code need.So before uploading its a good habit to first compile your code.In case it's more than 6kb it's likely to overwrite your bootloader.In which case you have to reflash the bootloader using ISP programmer.But you can reupload the bootloader on your chip  only if your reset pin is disabled as I/O (reset HIGH).In case your reset is enabled as I/O you will need HVSP (High volt serial programmer) to reconfigure your chip to be programmed with ISP programmer.Tersely ,it's a matter of fuse settings (specifically the RESET bit of hfuse) of your chip.
 
 * Can I use it in other OS ?
 
@@ -102,15 +99,15 @@ Anuduino
 
 * What all can it  do ?
 
- It can be integrated with number of sensors (IR,proxomity,temperature) ,bluetooth module ,GPRS etc.
+ It can be integrated with number of sensors (IR,proxomity,temperature) ,bluetooth module,as a multimeter etc.
 
 * How serial communication occurs ?
 
- The anuduino does not have a hardware serial port nor a hardware serial to USB converter.  `V-USB <http://www.obdev.at/products/vusb/index.html>`_ is a software-only implementation of a low-speed USB device for Atmel’s AVR® microcontrollers, making it possible to build USB hardware with almost any AVR® microcontroller, not requiring any additional chip for serial conversion.Buebie wrote the micronucelus bootloader which uses the V-USB project and renders anuduino to be used as usb development board without need of any additional chip.
+ The anuduino does not have a hardware serial port nor a hardware serial to USB converter.`V-USB <http://www.obdev.at/products/vusb/index.html>`_ is a software-only implementation of a low-speed USB device for Atmel’s AVR® microcontrollers, making it possible to build USB hardware with almost any AVR® microcontroller, not requiring any additional chip for serial conversion. Bluebie wrote the micronucelus bootloader which uses the V-USB project and renders anuduino to be used as usb development board without need of any additional chip.
 
 * What is hex file ?
 
- A hex file is a way to store data, in this case compiled code for an avr microcontroller. It is a common file format and something being a hex file does not mean it can be uploaded on the chip. When you use the Arduino IDE to upload a file to the board your code is compiled into a hex file and then uploaded using the command line tool which is built  into Arduino.
+ A hex file is a way to store data, in this case compiled code for an avr microcontroller. It is a common file format and something being a hex file does not mean it can be uploaded on the chip. When you use the Arduino IDE to upload a file to the board your code is compiled into a hex file and then uploaded using the command line tool which is built into Arduino.
 
 * Whats is cdc232.hex ?
 
@@ -119,10 +116,10 @@ Anuduino
 
 * If you upload sketches with DigiUSB libraries it detects as USB-HID(Human Interface Device)? 
 
- It's ok if the anuduino doesn't detect as ttyACM device ,if a device detects as tty device it means it is a USB-serial device.But anuduino in not a USB-serial device ,it does not provide USB-serial interface. So when you plug your anuduino ,the serial port tab of anuduino integrated arduino IDE will be greyed out.
+ It's ok if the anuduino doesn't detect as ttyACM device ,in general if a device detects as tty device it means it is a USB-serial device.But anuduino in not a USB-serial device ,it does not provide USB-serial interface. So when you plug your anuduino ,the serial port tab of digispark integrated arduino IDE will be greyed out.(link to the IDE is given below under the heading pre-requisite packages).
 
  DigiUSB - Debugging and HID communication library
- On the computer side you can use the included command line tools in the DigiUSB Programs folder:
+ On the computer side you can use the included command line tools in the DigiUSB Programs folder available in the Integrated IDE:
  digiusb - this program is like the Arduino **serial monitor**, allowing you to send and receive messages to/from a Digispark running DigiUSB
  
   .. image:: images/usbhid.png
@@ -160,13 +157,12 @@ All you need is:
 
 - 1x1.5K ohm
 
-
  .. image:: images/1.5k.jpeg
      :scale: 250%	
      :height: 50 	
      :width: 50
 
- Not just a faulty diode value can drive you crazy,for your circuit won't detect ,resistor can be the culprit too.Like in case by chance you use 15k instead of 1.5k ,wondering how,its just a matter of seeing red band as orange and orange as red in super excitement may be.Ya ,I made this terrible mistake too. Learn from it.Many people have used 1.8K and few nearby resistor values so just in case you are short of 1.5k then you might use other values without much ado.
+ Not just a faulty diode value can drive you crazy,for your board won't detect ,resistor can be the culprit too.Like in case by chance you use 15k instead of 1.5k ,wondering how,its just a matter of seeing red band as orange and orange as red in super excitement may be.Ya ,I made this terrible mistake too. Learn from it.Many people have used 1.8K and few nearby resistor values so just in case you are short of 1.5k then you might use other values without much ado.
 
 - 2x68 ohm
  
@@ -229,17 +225,17 @@ Pre-requisite packages
 
 #. `Bootloader <https://github.com/Bluebie/micronucleus-t85/>`_ 
 
- This repository contains the source of bootloader flashed on ATtiny85.
+ This repository contains the source of bootloader to be flashed on ATtiny85.
 
 #. `DigisparkIDE <http://digistump.com/wiki/digispark/tutorials/connecting>`_ ArduinoIDE integrated with Digispark libraries is required to run programs on your DIY project Anuduino.
 
- It also contains all the tools needed to programme your chip including **avrdude**.
+ It also contains all the tools needed to programme your chip including **avrdude** binary and **micronucelus** binary.
 
-.. note:: Note all the possible errors you might encounter while assembling your circuit are given below
+.. note:: Note all the possible errors you might encounter while assembling your circuit are given below under errors heading.
 
 Arduino as ISP
 --------------
-#. `arduinoIDE <http://arduino.cc/en/Main/Software>`_ Arduino IDE to use arduino-UNO as ISP to program your ATtiny85 chip.
+#. `arduinoIDE <http://arduino.cc/en/Main/Software>`_ Arduino IDE 1.04 version to use arduino-UNO as ISP to program your ATtiny85 chip.
 #. Plug in your arduino board 
 #. File-->Examples-->ArduinoISP
 #. Tools-->Board-->Arduino UNO 
@@ -252,7 +248,7 @@ Programming ATTiny85 with Arduino
 ---------------------------------
 #. ArduinoUno uses SPI protocol .To knpw more on this `click here <http://www.google.com/url?q=http%3A%2F%2Fpdp11.byethost12.com%2FAVR%2FArduinoAsProgrammer.htm&sa=D&sntz=1&usg=AFQjCNE7KJzWFBbjRhLtpMYrmUypxO8VHQ>`_
 
- Make the following 6 connections on your breadboard between ArduinoUNO and ATtiny85-20PU.Make sure your connections are firm. Improper connections is the major issue genertating errors.
+ Make the following 6 connections on your breadboard between ArduinoUNO and ATtiny85-20PU.Make sure your connections are firm. Improper connections is the major issue generating errors.
 
   .. image:: images/ArduinoISP_attiny85.png
      :scale: 250%	
@@ -281,9 +277,9 @@ Programming ATTiny85 with Arduino
 
 .. warning:: If you are programming with Arduino UNO then use a **10uF** capacitor between RESET and GND of arduino UNO.
 
-#. `Why do you need a capacitor <http://forum.arduino.cc/index.php/topic,104435.0.html>`_
+#. `Why do you need a capacitor ? <http://forum.arduino.cc/index.php/topic,104435.0.html>`_
 
-#. Next check if you have made proper wired connections before burning bootloader or setting fuses of your chip .
+#. Next CHECK if you have made proper wired connections between Arduino UNO and ATtiny85 chip prior to burning bootloader or setting fuses of your chip .
 
 #. For this your need avrdude binary and avrdude.conf file which is available in the package Digispark Integrated Arduino IDE (`available here <http://digistumpcom/wiki/digispark/tutorials/connecting>`_ )
 
@@ -299,7 +295,7 @@ Programming ATTiny85 with Arduino
      :height: 50 	
      :width: 50
 
-.. note:: change the port to your port /dev/ttyACM* or /dev/ttyUSB* or you might get error(1).
+.. note:: change the port to your port /dev/ttyACM* or /dev/ttyUSB* or you might get errors.
 
 Burning micronucleus.hex and setting fuses
 ------------------------------------------
@@ -307,19 +303,18 @@ Burning micronucleus.hex and setting fuses
 
 Uploading BOOTLOADER
 ~~~~~~~~~~~~~~~~~~~~~~
- Before you start anything , there are two versions of bootloader.
+ Before you start anything ,there are two versions of bootloader.
 
-* **First** (NORMAL) is : micronucleus-1.06.hex .This is the conventional bootloader which comes with the official DS.In this version there is a 5 seconds delay prior to execution of  already uploaded sketch.Within this 5sec the anuduino checks wether you have a new programme to overwrite already existing programme on the chip ,If not it starts the programme  already uploaded after a **5 seconds** delay.For eg: say you had programmed your chip to blink led on PB0. Now if you plug in your device after some time ,it will take 5 seconds for  your led to start blinking.
+* **First** (NORMAL) is : micronucleus-1.06.hex .In this version there is a 5 seconds delay prior to execution of  already uploaded sketch.Within this 5sec the anuduino checks wether you have a new programme to overwrite already existing programme on the chip or if not it starts the programme  already uploaded after a **5 seconds** delay.For eg: say you had programmed your chip to blink led on PB0. Now if you plug in your device after some time, it will take 5 seconds for your led to start blinking.
 
-* **Second** (JUMPER) : Now if every second is crucuial to your project and you can't wait for your programme to start after 5 seconds ,there is this another version micronucleus-1.06-jumper-v2-upgrade.hex
-
+* **Second** (JUMPER) : Now if every second is crucial to your project and you can't wait for your programme to start after 5 seconds ,there is this another version micronucleus-1.06-jumper-v2-upgrade.hex
 
 Bootloader is already available in the IDE you downloaded .It is in the DigisparkArduino-Linux32/DigisparkArduino-1.0.4/hardware/digispark/bootloaders/micronucleus/ folder or you can also obtain the latest version from `micronucelus-t85 repository <https://github.com/Bluebie/micronucleus-t85/tree/master/firmware/releases>`_.
 
 Uploading the NORMAL version
 +++++++++++++++++++++++++++++
 
-.. note ::change the paths in the following commands to where your folder exists.
+.. note:: change the paths in the following commands within  quotes(" ")to where your downloaded IDE folder exists.
 
 #. `cd` to the directory  DigisparkArduino-Linux32/Digispark-Arduino-1.0.4/hardware/tools/ 
     Here you will find the avrdude and avrdude.conf file
@@ -348,12 +343,11 @@ Setting fuses of the attiny85-20PU
 
 Now just like bootloader versions we have two different fuse settings as well
 
-**First** In case you want to 6 I/O including reset pin (reset pin enabled).You get 6 I/O but at a cost that you can't reprogramme your chip using any ISP programmer now.
-You can use this setting for **both** bootloader versions ,Normal as well as Jumper version. Reset Pin acts as weak (I/O).
 
-**Second** In this case you can still programme your chip using ISP programmer but you will have just 5 I/O excluding reset pin(reset pin disabled).
-These fuse settings **won't** work with Jumper version of bootloader.Jumper version required a jumper between the resest pin and GND to upload the programme.
+**First** In this case you can still programme your chip using ISP programmer but you will have just 5 I/O excluding the reset pin(reset pin disabled as I/O).
+These fuse settings **won't** work with Jumper version of bootloader.Jumper version requires a jumper between the resest pin and GND to upload the programme.
 
+**Second** In which there are 6 I/O pins available including reset pin (reset pin enabled).You get 6 I/O but at a cost that you can't reprogramme your chip using any ISP programmer now.You will need a HVSP.You can use this setting for **both** bootloader versions ,Normal as well as Jumper version. Reset Pin acts as weak (I/O).
 
 Fuse setting(Reset **disabled** as I/O)
 ++++++++++++++++++++++++++++++++++++++++
@@ -364,7 +358,6 @@ Fuse setting(Reset **disabled** as I/O)
      :scale: 250%	
      :height: 50 	
      :width: 50 
-
 
 * `cd` to the directory  DigisparkArduino-Linux32/Digispark-Arduino-1.0.4/hardware/tools/ 
     Here you will find the avrdude and avrdude.conf file
@@ -379,7 +372,7 @@ Fuse setting(Reset **enabled** as I/O)
     :height: 50 	
     :width: 50
 
- .. warning:: If you use the above fuse settings you can't reprogramme your IC with an ISP programmer until you have a High volt fuse resetter .This is because reset pin is enabled as I/O.
+ .. warning:: If you use the above fuse settings you can't reprogramme your IC until you have a High volt fuse resetter .This is because reset pin is enabled as I/O and you can't programme it using ISP.
 
 *  Set fuses to enable the reset pin to be used as I/O  lfuse:0xe1	**hfuse:0x5d** efuse:0xfe 
 
@@ -391,7 +384,7 @@ Fuse setting(Reset **enabled** as I/O)
 
 *  Now if you are done with the above two steps (burning bootloader and setting fuses) you are ready to upload sketches.
 
- After the above two steps are accomplished ,make the following USB connections and follow the next step.
+ After the above two steps are accomplished ,make the following USB connections (only if you don't have your own PCB) and follow the next step.
 
 USB Connections
 ===============
@@ -423,7 +416,7 @@ Setting rules in udev to avoid assertion errors
 	SUBSYSTEMS=="usb", ATTRS{idVendor}=="16d0", ATTRS{idProduct}=="0753", MODE:="0666"
 	KERNEL=="ttyACM*", ATTRS{idVendor}=="16d0", ATTRS{idProduct}=="0753", MODE:="0666", ENV{ID_MM_DEVICE_IGNORE}="1"
 
-#. Also add 99-digiusb.rules in /etc/udev/rules/
+#. Also add 99-digiusb.rules in /etc/udev/rules.d/
 
 #. gedit 99-digiusb.rules and add the following lines ::
 
@@ -467,7 +460,7 @@ Normal Version of Bootloader
 
 Jumper Version of Bootloader
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#. Jumper version removes 5 sec ddelay.
+#. Jumper version removes 5 sec delay.
 
 #. Board--->Digispark(TinyCore)
 
@@ -484,7 +477,7 @@ Jumper Version of Bootloader
 Uploading from commandline
 --------------------------
 
-How to use the command line tool:
+How to use the micronucelus command line tool:
 
 #. You can either use the **micronucelus** binary already available in the `Digispark-Arduino IDE <http://digistump.com/wiki/digispark/tutorials/connecting>`_ which you must have already downloaded by now.
 
@@ -498,7 +491,7 @@ or if your hex file is stored elsewhere then ::
 
 **OR** you can 
 
-#. Download micronucelus-t85 folder from `github <https://github.com/Bluebie/micronucleus-t85/>`_ (you might have this already ,micronucelus bootloader was taken from this)
+#. Download micronucelus-t85 folder from `github <https://github.com/Bluebie/micronucleus-t85/>`_ (you might have this already ,micronucelus bootloaderhex files were used from this repo)
 
  .. image:: images/commandlineupload.png
      :scale: 250%	
@@ -527,20 +520,13 @@ Burn cdc232.hex
 
 run command **dmesg** in terminal to enumerate the device as /dev/ttyACM*
 
-usb 2-1.2: >new low-speed USB device number 87 using ehci_hcd
-
-usb 2-1.2: >New USB device found, idVendor=16d0, idProduct=0753
-
-usb 2-1.2: >New USB device strings: Mfr=0, Product=0, SerialNumber=0
-
-
 ERRORS encountered
 ------------------
 
-Error when using ISP
-~~~~~~~~~~~~~~~~~~~~
+Error when using  ISP programmer 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. note::  All the errors encountered in avrdude is mainly due to poor connections between ISP programmer and ATtiny85
+.. note::  All the errors encountered in avrdude are mainly due to poor connections between ISP programmer and ATtiny85
            Redo your connections and see that no wire is loose.
 
 #. **Error**
@@ -554,7 +540,7 @@ This error occurs as your arduinoUNO might be on a serial port other than /dev/t
 
 #. **Error** ::
 
-	avrdude: please define PAGEL and BS2 signals in the configuration file for part ATtiny85
+	avrdude: please define PAGEL and BS2 signals in the configuration file for part ATtiny85 
 	avrdude: AVR device initialized and ready to accept instructions
 
 	Reading | ################################################## | 100% 0.02s
@@ -602,9 +588,9 @@ Bad permissions generally cause the ::
 	Abort mission! -1 error has occured ...
 	>> Please unplug the device and restart the program.
 
-“micronucleus: library/micronucleus_lib.c:63: micronucleus_connect: Assertion `res >= 4' failed.” is also a result of bad permissions.So set the required rules in /etc/udev/rules.d/ as explained above to avoid these errors.
+“micronucleus: library/micronucleus_lib.c:63: micronucleus_connect: Assertion `res >= 4' failed.” is also a result of bad permissions.
 
-`Linux troubleshooting <http://digistump.com/wiki/digispark/tutorials/linuxtroubleshooting>`_
+So set the required rules in /etc/udev/rules.d/ as explained above to avoid these errors.`Linux troubleshooting <http://digistump.com/wiki/digispark/tutorials/linuxtroubleshooting>`_
 
 Serial Monitor
 --------------
@@ -668,8 +654,6 @@ IR sensor
     :scale: 250%	
     :height: 50 	
     :width: 50
-
-
 
 Suggested LINKS
 ---------------

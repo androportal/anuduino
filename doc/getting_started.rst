@@ -288,7 +288,7 @@ Programming ATTiny85 with Arduino
 
 #. Next run this command in terminal and see that the device signature matches that of Attiny85 (**0x1e930b**). ::
 
-	./avrdude -C ./avrdude.conf -b 19200 -c arduino -p t85 -P /dev/ttyACM0 
+	./avrdude -C avrdude.conf -b 19200 -c arduino -p t85 -P /dev/ttyACM0 
 
  .. image:: images/chipcheck.png
      :scale: 250%	
@@ -319,9 +319,9 @@ Uploading the NORMAL version
 #. `cd` to the directory  DigisparkArduino-Linux32/Digispark-Arduino-1.0.4/hardware/tools/ 
     Here you will find the avrdude and avrdude.conf file
 
-#. Next run this command in terminal (This will upload the bootloader already available in the ArduinoIDE ::
+#. Next run this command in terminal (This will upload the bootloader already available in the ArduinoIDE) ::
 
-	./avrdude -C avrdude.conf -P /dev/ttyACM0 -b 19200 -c arduino -p t85 -U  flash:w:"/home/DigisparkArduino-Linux32/Digispark-		Arduino-1.0.4/hardware/digispark/bootloaders/micronucleus/micronucleus-1.06-upgrade.hex"
+	./avrdude -C avrdude.conf -P /dev/ttyACM0 -b 19200 -c arduino -p t85 -U  flash:w:"/home/jaghvi/Documents/DigisparkArduino-Linux32/Digispark-Arduino-1.0.4/hardware/digispark/bootloaders/micronucleus/micronucleus-1.06-upgrade.hex"
 
 #. This will burn the bootloader on your chip.
 
@@ -336,7 +336,7 @@ Uploading the JUMPER version
 
 #. Set path in the following command to where your bootloader hex file is located. ::
 
-	./avrdude -C avrdude.conf -P /dev/ttyACM0 -b 19200 -c arduino -p t85 -U  flash:w:"/home/micronucleus-t85-master/firmware/releases/micronucleus-1.06-upgrade.hex"
+	./avrdude -C avrdude.conf -P /dev/ttyACM0 -b 19200 -c arduino -p t85 -U  flash:w:"/home/micronucleus-t85-master/firmware/releases/micronucleus-1.06-upgrade-v2.hex"
 
 Setting fuses of the attiny85-20PU
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -527,7 +527,7 @@ Error when using  ISP programmer
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. note::  All the errors encountered in avrdude are mainly due to poor connections between ISP programmer and ATtiny85
-           Redo your connections and see that no wire is loose.
+           Redo your connections and see that no wire is loose.Also if your **IC is bricked or is defective** then also errors are encountered.
 
 #. **Error**
  

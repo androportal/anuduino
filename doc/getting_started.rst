@@ -17,29 +17,41 @@ Anuduino
 
 * What is arduino?
 
- Arduino is an open-source electronics prototyping platform. It's intended for artists, designers, hobbyists and anyone interested in creating interactive objects or environments but             tad too expensive ($15) for small projects or if you are new to electronics.We started exploring Digispark project which has developed around  9$ ATtiny-85 Arduino compatible board.  
- We have redesigned the circuit with optimized components and used DIP packages and single sided PCB to reduce cost to less than 3$.
+Arduino is an open-source electronics prototyping platform. It's intended for 
+artists, designers, hobbyists and anyone interested in creating interactive 
+objects or environments but that too expensive ($15) for small projects or 
+if you are new to electronics.We started exploring Digispark project which 
+has developed around  9$ ATtiny-85 Arduino compatible board.  
+We have redesigned the circuit with optimized components and used DIP packages
+and single sided PCB to reduce cost to less than 3$.
 
 * Why anuduino ?
 
- It is micro-sized, Arduino enabled, usb development board - cheap enough to jumpstart electronics.It is easy to make Do It Yourself project either using its kicad files or on breadboard.
+It is micro-sized, Arduino enabled, usb development board - cheap enough to 
+jumpstart electronics. It is easy to make Do It Yourself project either using 
+its kicad files or on breadboard.
 
 * Difference between arduino and anuduino ?
 
- +  ArduinoUNO uses ATmega328 microcontroller with 32Kb of flash memory of which 5Kb is used by the bootloader whereas anuduino has 8Kb of flash memory with 2Kb occupied by   bootloader,so you have around **6Kb** of memory left for code.
+ArduinoUNO uses ATmega328 microcontroller with 32Kb of flash memory of which 
+5Kb is used by the bootloader whereas anuduino has 8Kb of flash memory with 
+2Kb occupied by bootloader,so you have around **6Kb** of memory left for code.
+
 
  +------------------------+------------+----------+                                     
  |       Memory           | Anuduino   |ArduinoUNO| 		                      
  |                        |            |          |         			
  +========================+============+==========+
- |Flash(Total)            | 8k bytes   |32k bytes | 
+ |Flash(Total)            | 8k bytes   | 32k bytes| 
  +------------------------+------------+----------+
- |Flash(Bootloader)       |  2k bytes  |5k bytes  |         
+ |Flash(Bootloader)       |  2k bytes  |  5k bytes|         
  +------------------------+------------+----------+
- |Static RAM              | 512 byte   |2k bytes  |         
+ |Static RAM              | 512 byte   |  2k bytes|         
  +------------------------+------------+----------+
- |EEPROM                  |  512 byte  |1k byte   |          
+ |EEPROM                  |  512 byte  |  1k byte |          
  +------------------------+------------+----------+
+
+
 
  +------------------------+------------+----------+                                     
  |       PINS             | Anuduino   |ArduinoUNO| 		                      
@@ -54,21 +66,25 @@ Anuduino
  |Analog  I/O             |4           |6         |          
  +------------------------+------------+----------+
    	
-.. note :: The above comparison is made with Arduino UNO which is a pretty common.There are other variants of Arduino with more cost,more memory and features as well. 
+.. note :: The above comparison is made with Arduino UNO which is a pretty 
+		   common.There are other variants of Arduino with more cost, more 
+   		   memory and features as well. 
 
 * What is Anuduino ?
 
- + Anuduino is an **ATtiny85** based microcontroller development board with USB interface.
+ + Anuduino is an **ATtiny85** based microcontroller development board with 
+   USB interface.
  + It uses the familiar Arduino IDE for development.
  + PWM on 3 pins 
  + ADC on 4 pins
  + I²C and SPI (vis USI)
- + 6 I/O pins (2 are used for USB only if your program actively communicates over USB, otherwise you can use all 6 even if you are programming via USB)
+ + 6 I/O pins (2 are used for USB only if your program actively communicates 
+   over USB, otherwise you can use all 6 even if you are programming via USB)
  + 8 KB flash memory (about 6 KB after bootloader)
 
 * How micronucleus bootloader works ?
 
- Micronucleus is a bootloader designed for AVR tiny 85 chips with a minimal usb interface.Micronucelus is the the code that is installed on the device using an avr programmer. This  code allows the anuduino to act like a USB device, receives code, and when it receives code erase the code previously loaded. It also runs the code loaded onto it after a 5 second  delay (if bootloader uploaded is normal version , more about this later) if it does not receive a request to upload new code within that 5 seconds.
+ Micronucleus is a bootloader designed for AVR tiny 85 chips with a minimal usb interface.Micronucelus is the code that is installed on the device using an avr programmer. This  code allows the anuduino to act like a USB device, receives code, and when it receives code erase the code previously loaded. It also runs the code loaded onto it after a 5 second  delay (if bootloader uploaded is normal version , more about this later) if it does not receive a request to upload new code within that 5 seconds.
 
  It is a small V-USB program, similar to the DigiUSB, DigiKeyboard, and other usb related libraries. Normally programs exist at the very beginning of  the flash memory in the attiny85 chip, but micronucleus has been modified so the start of the program is about 6kb of 0xFF bytes (In other words all the bits in 6Kb are high).
  After that, micronucleus begins and uses up the final 2kb. This leaves room at the start of the chip for your own programs, but micronucleus always stays installed at the end. 0xFF  bytes are interpreted as NOP (no operation) instructions by the AVR chip, so the first time you run it, or if you run it after an erase but no write (sometimes this happens if there  is an error during the erase part of an upload attempt), next time the chip turns on it will execute all those NOPs and slam in to the bootloader code.
@@ -87,7 +103,7 @@ Anuduino
 
 * At what clock speed and voltage level does the circuit work?
 
- It uses the high speed PLL at 16MHz.The internal PLL of Attiny85 generates a clock frequency that is 8x multiplied from a source input. By default, the PLL uses the output of the  internal, 8.0 MHz RC oscillator as source and the safe voltage is 3.8V or more for this speed. 16.0mhz is more useful with existing  arduino libraries. Also if you Run the attiny85 at < 4v you might even brick it. That puts the chip out of specifications and the results are unpredictable ,sometimes the bootloader  will overwrite bits of itself and brick the device requiring a high voltage serial programmer (or regular ISP programmer if you didn't disable the reset pin) to recover.Hence it's suggested to use 5V supply.
+ It uses the high speed PLL at 16MHz.The internal PLL of Attiny85 generates a clock frequency that is 8x multiplied from a source input. By default, the PLL uses the output of the  internal, 8.0 MHz RC oscillator as source and the safe voltage is 3.8V or more for this speed. 16.0 Mhz is more useful with existing  arduino libraries. Also if you Run the attiny85 at < 4V you might even brick it. That puts the chip out of specifications and the results are unpredictable ,sometimes the bootloader  will overwrite bits of itself and brick the device requiring a high voltage serial programmer (or regular ISP programmer if you didn't disable the reset pin) to recover.Hence it's suggested to use 5V supply.
  
 * What if my code is more than 6 K?
 
@@ -95,15 +111,15 @@ Anuduino
 
 * Can I use it in other OS ?
 
- It can be used on linux, Aakash tablet running on ubunt12.10 arm version,and various others. This tutorial is dispositioned more towards linux users.
+ It can be used on GNU/Linux, Aakash tablet running on Ubuntu-12.10 ARM version,and various others. This tutorial is dispositioned more towards GNU/Linux users.
 
 * What all can it  do ?
 
- It can be integrated with number of sensors (IR,proxomity,temperature) ,bluetooth module,as a multimeter etc.
+ It can be integrated with number of sensors (IR, proxomity, temperature) , bluetooth module,as a multimeter etc.
 
 * How serial communication occurs ?
 
- The anuduino does not have a hardware serial port nor a hardware serial to USB converter.`V-USB <http://www.obdev.at/products/vusb/index.html>`_ is a software-only implementation of a low-speed USB device for Atmel’s AVR® microcontrollers, making it possible to build USB hardware with almost any AVR® microcontroller, not requiring any additional chip for serial conversion. Bluebie wrote the micronucelus bootloader which uses the V-USB project and renders anuduino to be used as usb development board without need of any additional chip.
+The anuduino does not have a hardware serial port nor a hardware serial to USB converter. `V-USB <http://www.obdev.at/products/vusb/index.html>`_ is a software-only implementation of a low-speed USB device for Atmel’s AVR microcontrollers, making it possible to build USB hardware with almost any AVR microcontroller, not requiring any additional chip for serial conversion. Bluebie wrote the micronucelus bootloader which uses the V-USB project and renders anuduino to be used as usb development board without need of any additional chip.
 
 * What is hex file ?
 
@@ -123,9 +139,7 @@ Anuduino
  digiusb - this program is like the Arduino **serial monitor**, allowing you to send and receive messages to/from a Digispark running DigiUSB
  
   .. image:: images/usbhid.png
-      :scale: 100%	
-      :height: 200 	
-      :width: 200
+      :width: 100%	
 
  If you upload a sketch with digiusb libraries then you can see it as HID device , do ::
  
@@ -138,9 +152,7 @@ All you need is:
 **One** Attiny85-20PU
 
  .. image:: images/attiny85_pinout.png
-      :scale: 100%	
-      :height: 100 	
-      :width: 200
+      :width: 100%	
 
  Atmel's  ATtiny85 8-Bit Processor. 8K of program space, 6 I/O lines, and 4-channel 10 bit ADC. 
 
@@ -149,70 +161,52 @@ All you need is:
 **Two** 3.6V Zener Diode
 
  **Zener diodes**:Power rating is critical .Most of the time it's perfectly safe to overrate your parts and use a component with a higher rating  than required for this particular circuit. However, in this case that approach can actually prevent the circuit from working because the trade-off in Zener diode design is that as its  power rating increases it also exhibits more capacitance. Capacitance on a high-speed data line is very bad and needs to be avoided or the circuit simply won't work. In practice, a  1/4W Zener should work fine; a 1/2W Zener should work, but is a bit on the borderline; and a 1W Zener almost certainly won't work it will have too much capacitance.
- It's a simple circuit, USB socket gets its +5V power line from the usual place, and the 3.3V data lines use three resistors and two **3.6V** 1/4W Zeners to reduce the Arduino's 5V to  3.3V.Purpose of zener diode is essential for the circuit.Even though the power supply line is 5v,communication line work at nominal 3.3V.The D- and D+ lines are dependent signalling  lines unlike tx ,rx in RS232 .They are half duplexed diferrential signalling pair helping the USB to run at high data speeds by reducing the effects of electrical noise.
+ It's a simple circuit, USB socket gets its +5V power line from the usual place, and the 3.3V data lines use three resistors and two **3.6V** 1/4W Zeners to reduce the Arduino's 5V to  3.3V.Purpose of zener diode is essential for the circuit.Even though the power supply line is 5v,communication line work at nominal 3.3V.The D- and D+ lines are dependent signalling  lines unlike tx ,rx in RS232 .They are half duplexed differential signalling pair helping the USB to run at high data speeds by reducing the effects of electrical noise.
 
- While assembling my circuit I happend to use 4.8V instead of 3.6V zener, without doubt I got error(2) message.Check below error(2).
+ While assembling my circuit I used 4.8V instead of 3.6V zener, without doubt I got error(2) message. Check below error(2).
 
 **Three** resistors 
 
 - 1x1.5K ohm
 
  .. image:: images/1.5k.jpeg
-     :scale: 250%	
-     :height: 50 	
-     :width: 50
+     :width: 80%	
 
  Not just a faulty diode value can drive you crazy,for your board won't detect ,resistor can be the culprit too.Like in case by chance you use 15k instead of 1.5k ,wondering how,its just a matter of seeing red band as orange and orange as red in super excitement may be.Ya ,I made this terrible mistake too. Learn from it.Many people have used 1.8K and few nearby resistor values so just in case you are short of 1.5k then you might use other values without much ado.
 
 - 2x68 ohm
  
  .. image:: images/r63.jpeg
-     :scale: 250%	
-     :height: 50 	
-     :width: 50
+     :width: 80%	
 
 Broken USB-A cable if you don't have the PCB and you plan to make it on a breadboard.
 
  .. image:: images/cad.png
-     :scale: 250%	
-     :height: 50 	
-     :width: 50
+     :width: 80%	
  
 
 For KICAD files click `this link <www.github.com/androportal/anuduino/kicad_files>`_
  
   .. image:: images/pinout.png
-      :scale: 250%	
-      :height: 50 	
-      :width: 50
+     :width: 80%	
 
 
  .. image:: images/resistor.png
-      :scale: 250%	
-      :height: 50 	
-      :width: 50
+     :width: 80%
 
 .. note :: The anode side of both diode is grounded and cathode side is connected to data lines.
 
  .. image:: images/diode.png
-       :scale: 250%	
-       :height: 50 	
-       :width: 50
+     :width: 80%
 
  .. image:: images/back.png
-      :scale: 250%	
-      :height: 50 	
-      :width: 50
+     :width: 80%
 
  .. image:: images/back_original.png
-      :scale: 250%	
-      :height: 50 	
-      :width: 50
+     :width: 80%
 
  .. image:: images/solder.png
-      :scale: 250%	
-      :height: 50 	
-      :width: 50
+     :width: 80%
 
 
 How to programme your chip
@@ -251,9 +245,7 @@ Programming ATTiny85 with Arduino
  Make the following 6 connections on your breadboard between ArduinoUNO and ATtiny85-20PU.Make sure your connections are firm. Improper connections is the major issue generating errors.
 
   .. image:: images/ArduinoISP_attiny85.png
-     :scale: 250%	
-     :height: 50 	
-     :width: 50
+     :width: 80%	
 
 
  **RECHECK CONNECTIONS**
@@ -288,12 +280,10 @@ Programming ATTiny85 with Arduino
 
 #. Next run this command in terminal and see that the device signature matches that of Attiny85 (**0x1e930b**). ::
 
-	./avrdude -C avrdude.conf -b 19200 -c arduino -p t85 -P /dev/ttyACM0 
+	./avrdude -C ./avrdude.conf -b 19200 -c arduino -p t85 -P /dev/ttyACM0 
 
  .. image:: images/chipcheck.png
-     :scale: 250%	
-     :height: 50 	
-     :width: 50
+     :width: 80%
 
 .. note:: change the port to your port /dev/ttyACM* or /dev/ttyUSB* or you might get errors.
 
@@ -305,7 +295,7 @@ Uploading BOOTLOADER
 ~~~~~~~~~~~~~~~~~~~~~~
  Before you start anything ,there are two versions of bootloader.
 
-* **First** (NORMAL) is : micronucleus-1.06.hex .In this version there is a 5 seconds delay prior to execution of  already uploaded sketch.Within this 5sec the anuduino checks wether you have a new programme to overwrite already existing programme on the chip or if not it starts the programme  already uploaded after a **5 seconds** delay.For eg: say you had programmed your chip to blink led on PB0. Now if you plug in your device after some time, it will take 5 seconds for your led to start blinking.
+* **First** (NORMAL) is : micronucleus-1.06.hex .In this version there is a 5 seconds delay prior to execution of  already uploaded sketch.Within this 5sec the anuduino checks whether you have a new programme to overwrite already existing programme on the chip or if not it starts the programme  already uploaded after a **5 seconds** delay.For eg: say you had programmed your chip to blink led on PB0. Now if you plug in your device after some time, it will take 5 seconds for your led to start blinking.
 
 * **Second** (JUMPER) : Now if every second is crucial to your project and you can't wait for your programme to start after 5 seconds ,there is this another version micronucleus-1.06-jumper-v2-upgrade.hex
 
@@ -319,9 +309,9 @@ Uploading the NORMAL version
 #. `cd` to the directory  DigisparkArduino-Linux32/Digispark-Arduino-1.0.4/hardware/tools/ 
     Here you will find the avrdude and avrdude.conf file
 
-#. Next run this command in terminal (This will upload the bootloader already available in the ArduinoIDE) ::
+#. Next run this command in terminal (This will upload the bootloader already available in the ArduinoIDE ::
 
-	./avrdude -C avrdude.conf -P /dev/ttyACM0 -b 19200 -c arduino -p t85 -U  flash:w:"/home/jaghvi/Documents/DigisparkArduino-Linux32/Digispark-Arduino-1.0.4/hardware/digispark/bootloaders/micronucleus/micronucleus-1.06-upgrade.hex"
+	./avrdude -C avrdude.conf -P /dev/ttyACM0 -b 19200 -c arduino -p t85 -U flash:w:"/home/DigisparkArduino-Linux32/Digispark-Arduino-1.0.4/hardware/digispark/bootloaders/micronucleus/micronucleus-1.06-upgrade.hex"
 
 #. This will burn the bootloader on your chip.
 
@@ -336,7 +326,7 @@ Uploading the JUMPER version
 
 #. Set path in the following command to where your bootloader hex file is located. ::
 
-	./avrdude -C avrdude.conf -P /dev/ttyACM0 -b 19200 -c arduino -p t85 -U  flash:w:"/home/micronucleus-t85-master/firmware/releases/micronucleus-1.06-upgrade-v2.hex"
+	./avrdude -C avrdude.conf -P /dev/ttyACM0 -b 19200 -c arduino -p t85 -U  flash:w:"/home/micronucleus-t85-master/firmware/releases/micronucleus-1.06-upgrade.hex"
 
 Setting fuses of the attiny85-20PU
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -347,7 +337,7 @@ Now just like bootloader versions we have two different fuse settings as well
 **First** In this case you can still programme your chip using ISP programmer but you will have just 5 I/O excluding the reset pin(reset pin disabled as I/O).
 These fuse settings **won't** work with Jumper version of bootloader.Jumper version requires a jumper between the resest pin and GND to upload the programme.
 
-**Second** In which there are 6 I/O pins available including reset pin (reset pin enabled).You get 6 I/O but at a cost that you can't reprogramme your chip using any ISP programmer now.You will need a HVSP.You can use this setting for **both** bootloader versions ,Normal as well as Jumper version. Reset Pin acts as weak (I/O).
+**Second** In which there are 6 I/O pins available including reset pin (reset pin enabled).You get 6 I/O but at a cost that you can't reprogramme your chip using any ISP programmer now. You will need a HVSP. You can use this setting for **both** bootloader versions ,Normal as well as Jumper version. Reset Pin acts as weak (I/O).
 
 Fuse setting(Reset **disabled** as I/O)
 ++++++++++++++++++++++++++++++++++++++++
@@ -355,9 +345,7 @@ Fuse setting(Reset **disabled** as I/O)
  .. note:: These fuses setting will not enable reset pin (ATTINY85 pin 1) as I/O, so you only have 5 I/O instead of 6 I/O 
 
  .. image:: images/resetdisabled.png
-     :scale: 250%	
-     :height: 50 	
-     :width: 50 
+     :width: 100%
 
 * `cd` to the directory  DigisparkArduino-Linux32/Digispark-Arduino-1.0.4/hardware/tools/ 
     Here you will find the avrdude and avrdude.conf file
@@ -368,17 +356,15 @@ Fuse setting(Reset **disabled** as I/O)
 Fuse setting(Reset **enabled** as I/O)
 +++++++++++++++++++++++++++++++++++++++
  .. image:: images/resetenabled.png
-    :scale: 250%	
-    :height: 50 	
-    :width: 50
+    :width: 80%
 
  .. warning:: If you use the above fuse settings you can't reprogramme your IC until you have a High volt fuse resetter .This is because reset pin is enabled as I/O and you can't programme it using ISP.
 
 *  Set fuses to enable the reset pin to be used as I/O  lfuse:0xe1	**hfuse:0x5d** efuse:0xfe 
 
-* `cd` to the directory  DigisparkArduino-Linux32/Digispark-Arduino-1.0.4/hardware/tools/   Here you will find the avrdude and avrdude.conf file.
+* `cd` to the directory  `DigisparkArduino-Linux32/Digispark-Arduino-1.0.4/hardware/tools/`. Here you will find the avrdude and avrdude.conf file.
 
-*  Run the  following command in terminal ::   
+*  Run the following command in terminal ::   
  
 	./avrdude -C avrdude.conf -p t85 -c arduino -P /dev/ttyACM0 -b 19200 -U lfuse:w:0xe1:m -U hfuse:w:0x5d:m -U efuse:w:0xfe:m
 
@@ -390,9 +376,7 @@ USB Connections
 ===============
 
  .. image:: images/breadboard_bb.jpg
-    :scale: 250%	
-    :height: 50 	
-    :width: 50
+	:width: 80%
 
 Device Detection
 ----------------
@@ -401,9 +385,7 @@ Device Detection
 run command **dmesg** or **tailf /var/log/syslog** in terminal to check the vendorID and productID
  
  .. image:: images/devicedetected.png
-     :scale: 250%	
-     :height: 50 	
-     :width: 50
+	:width: 80%
 
 
 Setting rules in udev to avoid assertion errors
@@ -445,18 +427,16 @@ Normal Version of Bootloader
 #. Click Upload (IDE will ask to plug int the device within sixty seconds)
 
  .. image:: images/upload_successful.png
-      :scale: 120%	
-      :height: 50 	
-      :width: 50
+	:width: 100%
 
 #. Now Plug anuduino
 
 #. If upload was not successful then you will get error message.Try to repeat the process.
 
  .. image:: images/uploadfailed.png
-      :scale: 120%	
-      :height: 50 	
-      :width: 50
+	:width: 90%
+	:scale: 70%
+	:height: 1000
 
 Jumper Version of Bootloader
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -494,9 +474,7 @@ or if your hex file is stored elsewhere then ::
 #. Download micronucelus-t85 folder from `github <https://github.com/Bluebie/micronucleus-t85/>`_ (you might have this already ,micronucelus bootloaderhex files were used from this repo)
 
  .. image:: images/commandlineupload.png
-     :scale: 250%	
-     :height: 50 	
-     :width: 50
+     :width: 80%
 
 #. In that folder go to commandline folder and do **make**
 #. A micronucelus binary is formed.
@@ -527,7 +505,7 @@ Error when using  ISP programmer
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. note::  All the errors encountered in avrdude are mainly due to poor connections between ISP programmer and ATtiny85
-           Redo your connections and see that no wire is loose.Also if your **IC is bricked or is defective** then also errors are encountered.
+           Redo your connections and see that no wire is loose.
 
 #. **Error**
  
@@ -577,9 +555,7 @@ Errors while making USB connection
 Run **dmesg** or **tailf /var/log/syslog** .Following error might occur due to number of reasons.If you have used a faulty resistor value or if the zener diodes used are of values other than 3.6V. Check if all the connections are proper specially consulting D- and D+ lines. 
 
  .. image:: images/error_usbconnection.png
-    :scale: 250%	
-    :height: 50 	
-    :width: 50
+	:width: 80%
 
 #. **Error**
 
@@ -588,9 +564,9 @@ Bad permissions generally cause the ::
 	Abort mission! -1 error has occured ...
 	>> Please unplug the device and restart the program.
 
-“micronucleus: library/micronucleus_lib.c:63: micronucleus_connect: Assertion `res >= 4' failed.” is also a result of bad permissions.
+"micronucleus: library/micronucleus_lib.c:63: micronucleus_connect: Assertion 'res >= 4' failed.” is also a result of bad permissions.
 
-So set the required rules in /etc/udev/rules.d/ as explained above to avoid these errors.`Linux troubleshooting <http://digistump.com/wiki/digispark/tutorials/linuxtroubleshooting>`_
+So set the required rules in /etc/udev/rules.d/ as explained above to avoid these errors. `Linux troubleshooting <http://digistump.com/wiki/digispark/tutorials/linuxtroubleshooting>`_
 
 Serial Monitor
 --------------
@@ -626,34 +602,25 @@ Project Ideas
 Blink LED
 ~~~~~~~~~
  .. image:: images/blink.png
-    :scale: 250%	
-    :height: 50 	
-    :width: 50
+	:width: 80%
 
 LM35 Temperature sensor and plotting real time sensor data using gnuplot
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
  .. image:: images/LM35_temperaturesensor.png
-    :scale: 250%	
-    :height: 50 	
-    :width: 50
+	:width: 80%
 
  .. image:: images/lm35.png
-    :scale: 50%	
-    :height: 50 	
-    :width: 50
+	:width: 80%
 
-.. image:: images/digitermlm35.png
-    :scale: 50%	
-    :height: 50 	
-    :width: 50
+..  image:: images/digitermlm35.png
+    :width: 80%
 
 IR sensor
 ~~~~~~~~~
+
  .. image:: images/IR.png
-    :scale: 250%	
-    :height: 50 	
-    :width: 50
+    :width: 80%
 
 Suggested LINKS
 ---------------

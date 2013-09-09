@@ -1,5 +1,6 @@
+
 Anuduino
-=========
+========
 
 .. contents::
 
@@ -138,8 +139,8 @@ The anuduino does not have a hardware serial port nor a hardware serial to USB c
  On the computer side you can use the included command line tools in the DigiUSB Programs folder available in the Integrated IDE:
  digiusb - this program is like the Arduino **serial monitor**, allowing you to send and receive messages to/from a Digispark running DigiUSB
  
-  .. image:: images/usbhid.png
-      :width: 100%	
+ .. image:: images/usbhid.png
+    :width: 100%	
 
  If you upload a sketch with digiusb libraries then you can see it as HID device , do ::
  
@@ -152,7 +153,7 @@ All you need is:
 **One** Attiny85-20PU
 
  .. image:: images/attiny85_pinout.png
-      :width: 100%	
+    :width: 100%	
 
  Atmel's  ATtiny85 8-Bit Processor. 8K of program space, 6 I/O lines, and 4-channel 10 bit ADC. 
 
@@ -187,39 +188,38 @@ Broken USB-A cable if you don't have the PCB and you plan to make it on a breadb
 
 For KICAD files click `this link <www.github.com/androportal/anuduino/kicad_files>`_
  
-  .. image:: images/pinout.png
+ .. image:: images/pinout.png
      :width: 80%	
 
 
  .. image:: images/resistor.png
-     :width: 80%
+    :width: 80%
 
-.. note :: The anode side of both diode is grounded and cathode side is connected to data lines.
+note: The anode side of both diode is grounded and cathode side is connected to data lines
+
 
  .. image:: images/diode.png
-     :width: 80%
+    :width: 80%
 
  .. image:: images/back.png
-     :width: 80%
+    :width: 80%
 
  .. image:: images/back_original.png
-     :width: 80%
+    :width: 80%
 
  .. image:: images/solder.png
-     :width: 80%
+    :width: 80%
 
 
 How to programme your chip
 ==========================
+
 Pre-requisite packages
 ----------------------
-#. `arduinoIDE <http://arduino.cc/en/Main/Software>`_ 
 
- Arduino IDE to use arduino-UNO as ISP to flash bootloader and set fuses of ATtiny85 chip.
+#. `arduinoIDE <http://arduino.cc/en/Main/Software>`_  Arduino IDE to use arduino-UNO as ISP to flash bootloader and set fuses of ATtiny85 chip.
 
-#. `Bootloader <https://github.com/Bluebie/micronucleus-t85/>`_ 
-
- This repository contains the source of bootloader to be flashed on ATtiny85.
+#. `Bootloader <https://github.com/Bluebie/micronucleus-t85/>`_  This repository contains the source of bootloader to be flashed on ATtiny85.
 
 #. `DigisparkIDE <http://digistump.com/wiki/digispark/tutorials/connecting>`_ ArduinoIDE integrated with Digispark libraries is required to run programs on your DIY project Anuduino.
 
@@ -229,6 +229,7 @@ Pre-requisite packages
 
 Arduino as ISP
 --------------
+
 #. `arduinoIDE <http://arduino.cc/en/Main/Software>`_ Arduino IDE 1.04 version to use arduino-UNO as ISP to program your ATtiny85 chip.
 #. Plug in your arduino board 
 #. File-->Examples-->ArduinoISP
@@ -240,6 +241,7 @@ Arduino as ISP
 
 Programming ATTiny85 with Arduino
 ---------------------------------
+
 #. ArduinoUno uses SPI protocol .To knpw more on this `click here <http://www.google.com/url?q=http%3A%2F%2Fpdp11.byethost12.com%2FAVR%2FArduinoAsProgrammer.htm&sa=D&sntz=1&usg=AFQjCNE7KJzWFBbjRhLtpMYrmUypxO8VHQ>`_
 
  Make the following 6 connections on your breadboard between ArduinoUNO and ATtiny85-20PU.Make sure your connections are firm. Improper connections is the major issue generating errors.
@@ -289,11 +291,13 @@ Programming ATTiny85 with Arduino
 
 Burning micronucleus.hex and setting fuses
 ------------------------------------------
+
 * Download the following `repository <https://github.com/Bluebie/micronucleus-t85/>`_ which contains the micronucelus bootloader.
 
 Uploading BOOTLOADER
-~~~~~~~~~~~~~~~~~~~~~~
- Before you start anything ,there are two versions of bootloader.
+~~~~~~~~~~~~~~~~~~~~
+
+Before you start anything ,there are two versions of bootloader.
 
 * **First** (NORMAL) is : micronucleus-1.06.hex .In this version there is a 5 seconds delay prior to execution of  already uploaded sketch.Within this 5sec the anuduino checks whether you have a new programme to overwrite already existing programme on the chip or if not it starts the programme  already uploaded after a **5 seconds** delay.For eg: say you had programmed your chip to blink led on PB0. Now if you plug in your device after some time, it will take 5 seconds for your led to start blinking.
 
@@ -306,12 +310,13 @@ Uploading the NORMAL version
 
 .. note:: change the paths in the following commands within  quotes(" ")to where your downloaded IDE folder exists.
 
-#. `cd` to the directory  DigisparkArduino-Linux32/Digispark-Arduino-1.0.4/hardware/tools/ 
-    Here you will find the avrdude and avrdude.conf file
+#. `cd` to the directory  `DigisparkArduino-Linux32/Digispark-Arduino-1.0.4/hardware/tools/` Here you will find the avrdude and avrdude.conf file
 
 #. Next run this command in terminal (This will upload the bootloader already available in the ArduinoIDE ::
 
-	./avrdude -C avrdude.conf -P /dev/ttyACM0 -b 19200 -c arduino -p t85 -U flash:w:"/home/DigisparkArduino-Linux32/Digispark-Arduino-1.0.4/hardware/digispark/bootloaders/micronucleus/micronucleus-1.06-upgrade.hex"
+		./avrdude -C avrdude.conf -P /dev/ttyACM0 -b 19200 -c arduino -p t85 \
+		-U flash:w:"/home/DigisparkArduino-Linux32/Digispark-Arduino-1.0.4\
+		/hardware/digispark/bootloaders/micronucleus/micronucleus-1.06-upgrade.hex"
 
 #. This will burn the bootloader on your chip.
 
@@ -326,7 +331,8 @@ Uploading the JUMPER version
 
 #. Set path in the following command to where your bootloader hex file is located. ::
 
-	./avrdude -C avrdude.conf -P /dev/ttyACM0 -b 19200 -c arduino -p t85 -U  flash:w:"/home/micronucleus-t85-master/firmware/releases/micronucleus-1.06-upgrade.hex"
+	./avrdude -C avrdude.conf -P /dev/ttyACM0 -b 19200 -c arduino -p t85 -U \
+	flash:w:"/home/micronucleus-t85-master/firmware/releases/micronucleus-1.06-upgrade.hex"
 
 Setting fuses of the attiny85-20PU
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -351,7 +357,8 @@ Fuse setting(Reset **disabled** as I/O)
     Here you will find the avrdude and avrdude.conf file
 *  Run the  following command in terminal ::   
  
-	./avrdude -C avrdude.conf -p t85 -c arduino -P /dev/ttyACM0 -b 19200 -U lfuse:w:0xe1:m -U hfuse:w:0xdd:m -U efuse:w:0xfe:m
+	./avrdude -C avrdude.conf -p t85 -c arduino -P /dev/ttyACM0 -b \
+	19200 -U lfuse:w:0xe1:m -U hfuse:w:0xdd:m -U efuse:w:0xfe:m
 
 Fuse setting(Reset **enabled** as I/O)
 +++++++++++++++++++++++++++++++++++++++
@@ -366,7 +373,8 @@ Fuse setting(Reset **enabled** as I/O)
 
 *  Run the following command in terminal ::   
  
-	./avrdude -C avrdude.conf -p t85 -c arduino -P /dev/ttyACM0 -b 19200 -U lfuse:w:0xe1:m -U hfuse:w:0x5d:m -U efuse:w:0xfe:m
+	./avrdude -C avrdude.conf -p t85 -c arduino -P /dev/ttyACM0 -b 19200 -U\
+	 lfuse:w:0xe1:m -U hfuse:w:0x5d:m -U efuse:w:0xfe:m
 
 *  Now if you are done with the above two steps (burning bootloader and setting fuses) you are ready to upload sketches.
 
@@ -393,10 +401,12 @@ Setting rules in udev to avoid assertion errors
 
 #. Go to /etc/udev/rules.d/ with root privileges.
 
-#. gedit 49-micronucelus.rules and add the following lines         ::
+#. gedit 49-micronucelus.rules and add the following lines ::
 
-	SUBSYSTEMS=="usb", ATTRS{idVendor}=="16d0", ATTRS{idProduct}=="0753", MODE:="0666"
-	KERNEL=="ttyACM*", ATTRS{idVendor}=="16d0", ATTRS{idProduct}=="0753", MODE:="0666", ENV{ID_MM_DEVICE_IGNORE}="1"
+	SUBSYSTEMS=="usb", ATTRS{idVendor}=="16d0", ATTRS{idProduct}=="0753",\
+	MODE:="0666"
+	KERNEL=="ttyACM*", ATTRS{idVendor}=="16d0", ATTRS{idProduct}=="0753",\
+	MODE:="0666", ENV{ID_MM_DEVICE_IGNORE}="1"
 
 #. Also add 99-digiusb.rules in /etc/udev/rules.d/
 
@@ -471,7 +481,7 @@ or if your hex file is stored elsewhere then ::
 
 **OR** you can 
 
-#. Download micronucelus-t85 folder from `github <https://github.com/Bluebie/micronucleus-t85/>`_ (you might have this already ,micronucelus bootloaderhex files were used from this repo)
+Download micronucelus-t85 folder from `github <https://github.com/Bluebie/micronucleus-t85/>`_ (you might have this already ,micronucelus bootloaderhex files were used from this repo)
 
  .. image:: images/commandlineupload.png
      :width: 80%
@@ -492,11 +502,13 @@ If you get this error try to run it again ::
 
 Burn cdc232.hex 
 ~~~~~~~~~~~~~~~
+
 #. To enumerate anuduino as USB serial device run this command ::
 
 	sudo ./micronucleus micronucleus-t85-master/commandline/cdc232.hex
 
 run command **dmesg** in terminal to enumerate the device as /dev/ttyACM*
+
 
 ERRORS encountered
 ------------------
@@ -507,16 +519,14 @@ Error when using  ISP programmer
 .. note::  All the errors encountered in avrdude are mainly due to poor connections between ISP programmer and ATtiny85
            Redo your connections and see that no wire is loose.
 
-#. **Error**
+**Error**
  
 This error occurs as your arduinoUNO might be on a serial port other than /dev/ttyACM0 ::
  
 	avrdude: ser_open(): can't open device "/dev/ttyACM0": No such file or directory
 	ioctl("TIOCMGET"): Invalid argument
 
-
-
-#. **Error** ::
+Avrdude output ::
 
 	avrdude: please define PAGEL and BS2 signals in the configuration file for part ATtiny85 
 	avrdude: AVR device initialized and ready to accept instructions
@@ -528,7 +538,7 @@ This error occurs as your arduinoUNO might be on a serial port other than /dev/t
 		 Double check connections and try again, or use -F to override
 		 this check.
 
-#. **Error** 
+**Error** 
 
 .. note::  If baud rate is note set properly then stk500 error is encountered.
 
@@ -542,7 +552,7 @@ This error also occours if capacitor is not used in case you are programming wit
 		 Double check connections and try again, or use -F to override
 		 this check.
 
-#. **Error** ::
+**Error** ::
 
 	avrdude: stk500_getsync(): not in sync: resp=0xe0
 
@@ -550,14 +560,14 @@ This error also occours if capacitor is not used in case you are programming wit
 Errors while making USB connection
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-#. **Error**
+**Error**
 
 Run **dmesg** or **tailf /var/log/syslog** .Following error might occur due to number of reasons.If you have used a faulty resistor value or if the zener diodes used are of values other than 3.6V. Check if all the connections are proper specially consulting D- and D+ lines. 
 
  .. image:: images/error_usbconnection.png
-	:width: 80%
+	:width: 100%
 
-#. **Error**
+**Error**
 
 Bad permissions generally cause the ::
 
@@ -582,7 +592,8 @@ Digiterm
 	gem install digiusb
 
 DigiUSB monitor
-~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~
+
 #. The Digispark integrated arduinoIDE has DigiUSB libraries which has the DigiUSB monitor working like a serial monitor.
 
 DigiUSB monitor has two more binaries send and receive.
@@ -599,8 +610,10 @@ $ ./receive >> output.txt
 
 Project Ideas
 --------------
+
 Blink LED
 ~~~~~~~~~
+
  .. image:: images/blink.png
 	:width: 80%
 
@@ -608,13 +621,13 @@ LM35 Temperature sensor and plotting real time sensor data using gnuplot
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
  .. image:: images/LM35_temperaturesensor.png
-	:width: 80%
+	:width: 90%
 
  .. image:: images/lm35.png
-	:width: 80%
+	:width: 90%
 
 ..  image:: images/digitermlm35.png
-    :width: 80%
+    :width: 90%
 
 IR sensor
 ~~~~~~~~~

@@ -105,10 +105,11 @@ ArduinoUNO uses ATmega328 microcontroller with 32Kb of flash memory of which
 * At what clock speed and voltage level does the circuit work?
 
  It uses the high speed PLL at 16MHz.The internal PLL of Attiny85 generates a clock frequency that is 8x multiplied from a source input. By default, the PLL uses the output of the  internal, 8.0 MHz RC oscillator as source and the safe voltage is 3.8V or more for this speed. 16.0 Mhz is more useful with existing  arduino libraries. Also if you Run the attiny85 at < 4V you might even brick it. That puts the chip out of specifications and the results are unpredictable ,sometimes the bootloader  will overwrite bits of itself and brick the device requiring a high voltage serial programmer (or regular ISP programmer if you didn't disable the reset pin) to recover.Hence it's suggested to use 5V supply.
- 
-* What if my code is more than 6 K?
 
- If you are uploading your sketch using Digispark integrated Arduino IDE ,before uploading if you compile the code you will get an idea of how much memory does your code need.So before uploading its a good habit to first compile your code.In case it's more than 6kb it's likely to overwrite your bootloader.In which case you have to reflash the bootloader using ISP programmer.But you can reupload the bootloader on your chip  only if your reset pin is disabled as I/O (reset HIGH).In case your reset is enabled as I/O you will need HVSP (High volt serial programmer) to reconfigure your chip to be programmed with ISP programmer.Tersely ,it's a matter of fuse settings (specifically the RESET bit of hfuse) of your chip.
+..   
+	* What if my code is more than 6 K? 
+
+	 If you are uploading your sketch using Digispark integrated Arduino IDE ,before uploading if you compile the code you will get an idea of how much memory does your code need.So before uploading its a good habit to first compile your code.In case it's more than 6kb it's likely to overwrite your bootloader.In which case you have to reflash the bootloader using ISP programmer.But you can reupload the bootloader on your chip  only if your reset pin is disabled as I/O (reset HIGH).In case your reset is enabled as I/O you will need HVSP (High volt serial programmer) to reconfigure your chip to be programmed with ISP programmer.Tersely ,it's a matter of fuse settings (specifically the RESET bit of hfuse) of your chip.
 
 * Can I use it in other OS ?
 
